@@ -65,11 +65,12 @@ module ParkPlace::Controllers
         login_required
         def load_buckets
             @buckets = Bucket.find_by_sql [%{
-               SELECT b.*, COUNT(c.id) AS total_children
-               FROM parkplace_bits b LEFT JOIN parkplace_bits c 
-                        ON c.parent_id = b.id
-               WHERE b.parent_id IS NULL AND b.owner_id = ?
-               GROUP BY b.id ORDER BY b.name}, @user.id]
+              SELECT b.*,
+              (SELECT COUNT(id) FROM parkplace_bits WHERE parent_id = b.id)
+              FROM parkplace_bits b
+              WHERE b.parent_id IS NULL AND b.owner_id = ?
+              ORDER BY b.name;
+               }, @user.id]
             @bucket = Bucket.new(:owner_id => @user.id, :access => CANNED_ACLS['private'])
         end
         def get
