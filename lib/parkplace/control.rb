@@ -66,7 +66,7 @@ module ParkPlace::Controllers
         def load_buckets
             @buckets = Bucket.find_by_sql [%{
               SELECT b.*,
-              (SELECT COUNT(id) FROM parkplace_bits WHERE parent_id = b.id)
+              (SELECT COUNT(id) FROM parkplace_bits WHERE parent_id = b.id) as total_children
               FROM parkplace_bits b
               WHERE b.parent_id IS NULL AND b.owner_id = ?
               ORDER BY b.name;
