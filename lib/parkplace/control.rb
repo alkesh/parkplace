@@ -297,6 +297,7 @@ module ParkPlace::Views
     end
 
     def control_buckets
+      errors_for @state
         if @buckets.any?
             table do
                 thead do
